@@ -76,4 +76,11 @@ public class RepositoryDataService {
             return ResponseEntity.status(404).body("Donnée introuvable pour suppression");
         }
     }
+    // 🔹 Récupérer toutes les données
+
+    public ResponseEntity<List<RepositoryData>> getAll() {
+        List<RepositoryData> list = repository.findAll();
+        return ResponseEntity.ok(list);
+    }
+
 }
