@@ -1,0 +1,34 @@
+services:
+  db:
+    image: postgres:15
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456789
+      POSTGRES_DB: repositorydb
+    ports:
+      - "5434:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - Referentiel-net
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: Referentiel_app
+    depends_on:
+      - db
+    ports:
+      - "9080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/repositorydb
+    networks:
+      - Referentiel-net
+
+volumes:
+  db-data:
+
+networks:
+  Referentiel-net:
