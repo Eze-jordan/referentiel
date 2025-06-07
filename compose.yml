@@ -16,7 +16,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: Referentiel_app
+    container_name: referentiel_app
     depends_on:
       - db
     ports:
