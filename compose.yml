@@ -10,7 +10,7 @@ services:
     volumes:
       - db-data:/var/lib/mysql
     networks:
-      - Referentiel-net
+      - referentiel-net
 
   app:
     build:
@@ -24,7 +24,7 @@ services:
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/repositorydb
     networks:
-      - Referentiel-net
+      - referentiel-net
     volumes:
       - app-data:/application/uploads
 
@@ -33,4 +33,4 @@ volumes:
   app-data:
 
 networks:
-  Referentiel-net:
+  referentiel-net:
