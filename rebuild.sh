@@ -4,7 +4,7 @@
 docker compose down
 
 # Supprimer l'image de l'application
-docker rmi Referentiel_app:latest
+docker rmi referentiel_app:latest
 
 # Récupérer les dernières modifications depuis Git
 git pull
