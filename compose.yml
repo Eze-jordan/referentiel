@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   db:
     image: mysql:8
@@ -7,8 +5,6 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: 123456789
       MYSQL_DATABASE: referentiel_db
-      MYSQL_USER: root
-      MYSQL_PASSWORD: 123456789
     ports:
       - "3310:3306"
     volumes:
@@ -22,15 +18,11 @@ services:
       dockerfile: Dockerfile
     container_name: referentiel_app
     depends_on:
-      - db  # 🟢 Le nom du service (PAS le container_name)
+      - db
     ports:
       - "9088:8080"
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/referentiel_db
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: 123456789
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      SPRING_JPA_SHOW_SQL: "true"
     networks:
       - referentiel_net
 
