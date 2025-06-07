@@ -1,7 +1,7 @@
 services:
   db:
     image: mysql:8
-    container_name: mysql_db_referentiel
+    container_name: mysql_referentiel_db
     environment:
       MYSQL_ROOT_PASSWORD: 123456789
       MYSQL_DATABASE: referentiel_db
@@ -28,7 +28,6 @@ services:
 
 volumes:
   db-data:
-
 
 networks:
   referentiel_net:
