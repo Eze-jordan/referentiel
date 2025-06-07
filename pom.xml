@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.ogooueTechnology</groupId>
-	<artifactId>Referentiel</artifactId>
+	<artifactId>referentiel</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Referentiel</name>
 	<description>Référentiel vise à créer une base centralisée de métadonnées</description>
@@ -63,11 +63,7 @@
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 			<version>2.3.0</version>
 		</dependency>
-		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>42.7.3</version> <!-- ou une version récente compatible -->
-		</dependency>
+
 
 	</dependencies>
 

@@ -1,4 +1,4 @@
-package com.ogooueTechnology.Referentiel;
+package com.ogooueTechnology.referentiel;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

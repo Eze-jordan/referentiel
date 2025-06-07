@@ -1,6 +1,6 @@
-package com.ogooueTechnology.Referentiel.repository;
+package com.ogooueTechnology.referentiel.repository;
 
-import com.ogooueTechnology.Referentiel.model.RepositoryData;
+import com.ogooueTechnology.referentiel.model.RepositoryData;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 

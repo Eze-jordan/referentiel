@@ -1,7 +1,7 @@
-package com.ogooueTechnology.Referentiel.controller;
+package com.ogooueTechnology.referentiel.controller;
 
-import com.ogooueTechnology.Referentiel.model.RepositoryData;
-import com.ogooueTechnology.Referentiel.service.RepositoryDataService;
+import com.ogooueTechnology.referentiel.model.RepositoryData;
+import com.ogooueTechnology.referentiel.service.RepositoryDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

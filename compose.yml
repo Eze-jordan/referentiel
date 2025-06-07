@@ -1,10 +1,10 @@
 services:
   db:
     image: mysql:8
-    container_name: mysql_referentiel_db
+    container_name: mysql_repository_db
     environment:
       MYSQL_ROOT_PASSWORD: 123456789
-      MYSQL_DATABASE: referentiel_db
+      MYSQL_DATABASE: repository_db
     ports:
       - "3310:3306"
     volumes:
@@ -22,7 +22,7 @@ services:
     ports:
       - "9088:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/referentiel_db
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/repository_db
     networks:
       - referentiel_net
 

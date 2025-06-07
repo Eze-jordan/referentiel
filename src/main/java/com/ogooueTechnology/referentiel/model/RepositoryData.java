@@ -1,4 +1,4 @@
-package com.ogooueTechnology.Referentiel.model;
+package com.ogooueTechnology.referentiel.model;
 
 import jakarta.persistence.*;
 import lombok.*;
