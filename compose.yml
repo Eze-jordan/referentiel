@@ -23,7 +23,7 @@ services:
     ports:
       - "9088:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/repositorydb
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/repositorydb
     networks:
       - referentiel-net
     volumes:
