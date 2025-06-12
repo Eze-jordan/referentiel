@@ -1,7 +1,7 @@
-package com.ogooueTechnology.Referentiel.service;
+package com.ogooueTechnology.referentiel.service;
 
-import com.ogooueTechnology.Referentiel.model.RepositoryData;
-import com.ogooueTechnology.Referentiel.repository.RepositoryDataRepository;
+import com.ogooueTechnology.referentiel.model.RepositoryData;
+import com.ogooueTechnology.referentiel.repository.RepositoryDataRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
