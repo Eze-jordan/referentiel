@@ -50,6 +50,12 @@ public class RepositoryDataController {
         return repositoryService.create(data);
     }
 
+    @Operation(summary = "Créer plusieurs entrées dans le référentiel")
+    @PostMapping("/batch")
+    public ResponseEntity<?> createBatch(@RequestBody List<RepositoryData> dataList) {
+        return repositoryService.createBatch(dataList);
+    }
+
     @Operation(summary = "Modifier une entrée existante")
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody RepositoryData updated) {

@@ -3,29 +3,44 @@ package com.ogooueTechnology.referentiel.service;
 import com.ogooueTechnology.referentiel.dto.UtilisateurRequestDTO;
 import com.ogooueTechnology.referentiel.dto.UtilisateurResponseDTO;
 import com.ogooueTechnology.referentiel.mapper.UtilisateurMapper;
+import com.ogooueTechnology.referentiel.model.Role;
 import com.ogooueTechnology.referentiel.model.Utilisateur;
+import com.ogooueTechnology.referentiel.model.Validation;
 import com.ogooueTechnology.referentiel.repository.UtilisateurRepository;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-public class UtilisateurService {
+public class UtilisateurService implements UserDetailsService {
 
     private final UtilisateurRepository utilisateurRepository;
     private final PasswordEncoder passwordEncoder;
+    private  final ValidationService validationService;
 
-    public UtilisateurService(UtilisateurRepository utilisateurRepository, PasswordEncoder passwordEncoder) {
+    public UtilisateurService(UtilisateurRepository utilisateurRepository, PasswordEncoder passwordEncoder, ValidationService validationService) {
         this.utilisateurRepository = utilisateurRepository;
         this.passwordEncoder = passwordEncoder;
+        this.validationService = validationService;
     }
     //Créer un nouvel utilisateur
     public UtilisateurResponseDTO createUtilisateur(UtilisateurRequestDTO dto) {
+        // Rôle par défaut
+        if (dto.getRole() == null) {
+            dto.setRole(Role.USER);
+        }
         Utilisateur utilisateur = UtilisateurMapper.toEntity(dto);
         utilisateur.setMotDePasse(passwordEncoder.encode(dto.getPassword())); // encodage du mot de passe
-        Utilisateur saved = utilisateurRepository.save(utilisateur); // ✅ U en minuscule
+        Utilisateur saved = utilisateurRepository.save(utilisateur);
+        this.validationService.enregister(utilisateur);
+
         return UtilisateurMapper.toDto(saved);
     }
     //Liste tous les utilisateurs
@@ -48,6 +63,27 @@ public class UtilisateurService {
         }
         utilisateurRepository.deleteById(id);
     }
+    public void activation(Map<String, String> activation) {
+        Validation validation = validationService.lireEnFonctionDuCode(activation.get("code"));
+        if (Instant.now().isAfter(validation.getExpiration())) {
+            throw new RuntimeException("Votre code a expiré");
+        }
+
+        Utilisateur utilisateurActiver = utilisateurRepository.findById(validation.getUtilisateur().getId())
+                .orElseThrow(() -> new RuntimeException("Utilisateur inconnu"));
+
+        utilisateurActiver.setActif(true);
+        utilisateurRepository.save(utilisateurActiver);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return this.utilisateurRepository.findByEmail(username).orElseThrow (()
+                -> new UsernameNotFoundException(
+                "Aucun utilisateur ne conrespond à cet identifiant"
+        ));
+    }
+
     //Modifier les infos d’un utilisateur
     public UtilisateurResponseDTO updateUtilisateur(Long id, UtilisateurRequestDTO dto) {
         Utilisateur existing = utilisateurRepository.findById(id)

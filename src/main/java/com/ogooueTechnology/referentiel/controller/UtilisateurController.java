@@ -1,18 +1,32 @@
 package com.ogooueTechnology.referentiel.controller;
 
+import com.ogooueTechnology.referentiel.dto.AuthentificationDTO;
 import com.ogooueTechnology.referentiel.dto.UtilisateurRequestDTO;
 import com.ogooueTechnology.referentiel.dto.UtilisateurResponseDTO;
+import com.ogooueTechnology.referentiel.securite.JwtService;
 import com.ogooueTechnology.referentiel.service.UtilisateurService;
+import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/api/utilisateurs")
+@RequestMapping("/api/v1/utilisateurs")
 public class UtilisateurController {
-
+    @Autowired
     private final UtilisateurService utilisateurService;
+    @Autowired
+    private AuthenticationManager authenticationManager;
+    @Autowired
+    private JwtService jwtService;
 
     public UtilisateurController(UtilisateurService utilisateurService) {
         this.utilisateurService = utilisateurService;
@@ -22,6 +36,32 @@ public class UtilisateurController {
     @PostMapping("/create")
     public ResponseEntity<UtilisateurResponseDTO> create(@RequestBody UtilisateurRequestDTO dto) {
         return ResponseEntity.ok(utilisateurService.createUtilisateur(dto));
+    }
+    @PostMapping("/activation")
+    @Operation(summary = "Activer un compte utilisateur", description = "Active un utilisateur via un token ou un code d’activation")
+    public ResponseEntity<String> activation(@RequestBody Map<String, String> activation) {
+        try {
+            this.utilisateurService.activation(activation);
+            return ResponseEntity.ok("Compte activé avec succès.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/connexion")
+    @Operation(summary = "Connexion", description = "Permet de se connecter et de récupérer un token JWT")
+    public Map< String, String > connexion(@Valid @RequestBody AuthentificationDTO authentificationDTO) {
+        Authentication authenticate = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken
+                        (authentificationDTO.username(), authentificationDTO.motDePasse())
+        );
+
+        if(authenticate.isAuthenticated()) {
+            return this.jwtService.generate(authentificationDTO.username());
+
+        }
+        return null;
+
     }
 
     // 🔹 Liste de tous les utilisateurs

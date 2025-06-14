@@ -50,6 +50,15 @@ public class RepositoryDataService {
         }
     }
 
+    public ResponseEntity<?> createBatch(List<RepositoryData> dataList) {
+        try {
+            List<RepositoryData> saved = repository.saveAll(dataList);
+            return ResponseEntity.ok(saved);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Erreur lors de la création en lot : " + e.getMessage());
+        }
+    }
+
     // ♻️ Mettre à jour une entrée existante
     public ResponseEntity<?> update(Long refID, RepositoryData updatedData) {
         Optional<RepositoryData> existing = repository.findById(refID);
