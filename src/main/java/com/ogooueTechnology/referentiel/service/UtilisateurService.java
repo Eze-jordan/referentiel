@@ -7,6 +7,7 @@ import com.ogooueTechnology.referentiel.model.Role;
 import com.ogooueTechnology.referentiel.model.Utilisateur;
 import com.ogooueTechnology.referentiel.model.Validation;
 import com.ogooueTechnology.referentiel.repository.UtilisateurRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -112,6 +113,15 @@ public class UtilisateurService implements UserDetailsService {
         return UtilisateurMapper.toDto(updated);
     }
 
+    public UtilisateurResponseDTO desactiverUtilisateur(Long id) {
+        Utilisateur utilisateur = utilisateurRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Utilisateur non trouvé"));
+
+        utilisateur.setActif(false);
+        utilisateurRepository.save(utilisateur);
+
+        return UtilisateurMapper.toDto(utilisateur);
+    }
 
 
 }

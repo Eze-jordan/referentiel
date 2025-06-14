@@ -6,6 +6,7 @@ import com.ogooueTechnology.referentiel.dto.UtilisateurResponseDTO;
 import com.ogooueTechnology.referentiel.securite.JwtService;
 import com.ogooueTechnology.referentiel.service.UtilisateurService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/utilisateurs")
+@Tag(name = "Utilisateurs", description = "Opérations de gestion des utilisateurs et authentification")
 public class UtilisateurController {
     @Autowired
     private final UtilisateurService utilisateurService;
@@ -34,6 +36,7 @@ public class UtilisateurController {
 
     // 🔹 Créer un utilisateur
     @PostMapping("/create")
+    @Operation(summary = "Créer un utilisateur", description = "Permet de créer un nouvel utilisateur")
     public ResponseEntity<UtilisateurResponseDTO> create(@RequestBody UtilisateurRequestDTO dto) {
         return ResponseEntity.ok(utilisateurService.createUtilisateur(dto));
     }
@@ -66,24 +69,28 @@ public class UtilisateurController {
 
     // 🔹 Liste de tous les utilisateurs
     @GetMapping("/all")
+    @Operation(summary = "Récupérer tous les utilisateurs", description = "Retourne la liste de tous les utilisateurs")
     public ResponseEntity<List<UtilisateurResponseDTO>> getAll() {
         return ResponseEntity.ok(utilisateurService.getAllUtilisateurs());
     }
 
     // 🔹 Récupérer un utilisateur par ID
     @GetMapping("/{id}")
+    @Operation(summary = "Récupérer un utilisateur par ID", description = "Retourne les infos d’un utilisateur spécifique")
     public ResponseEntity<UtilisateurResponseDTO> getById(@PathVariable Long id) {
         return ResponseEntity.ok(utilisateurService.getById(id));
     }
 
     // 🔹 Mettre à jour un utilisateur
     @PutMapping("/{id}")
+    @Operation(summary = "Modifier un utilisateur", description = "Permet de modifier les infos d’un utilisateur existant")
     public ResponseEntity<UtilisateurResponseDTO> update(@PathVariable Long id, @RequestBody UtilisateurRequestDTO dto) {
         return ResponseEntity.ok(utilisateurService.updateUtilisateur(id, dto));
     }
 
     // 🔹 Supprimer un utilisateur
     @DeleteMapping("/{id}")
+    @Operation(summary = "Supprimer un utilisateur", description = "Permet de supprimer un utilisateur par ID")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         utilisateurService.deleteById(id);
         return ResponseEntity.ok().body("Utilisateur supprimé avec succès.");
@@ -91,7 +98,14 @@ public class UtilisateurController {
 
     // 🔹 Activer un utilisateur
     @PutMapping("/{id}/activer")
+    @Operation(summary = "activer un utilisateur par ID", description = "activer un utilisateur par ID")
     public ResponseEntity<UtilisateurResponseDTO> activer(@PathVariable Long id) {
         return ResponseEntity.ok(utilisateurService.activerUtilisateur(id));
     }
+    @PutMapping("/{id}/desactiver")
+    @Operation(summary = "Désactiver un utilisateur par ID", description = "Désactive le compte d'un utilisateur sans le supprimer.")
+    public ResponseEntity<UtilisateurResponseDTO> desactiver(@PathVariable Long id) {
+        return ResponseEntity.ok(utilisateurService.desactiverUtilisateur(id));
+    }
+
 }
