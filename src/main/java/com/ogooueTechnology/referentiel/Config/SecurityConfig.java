@@ -40,7 +40,9 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/v1/utilisateurs/create",
                                 "/api/v1/utilisateurs/activation",
-                                "/api/v1/utilisateurs/connexion"
+                                "/api/v1/utilisateurs/connexion",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**"
                                 ).permitAll()
                         .anyRequest().authenticated()
                 )
