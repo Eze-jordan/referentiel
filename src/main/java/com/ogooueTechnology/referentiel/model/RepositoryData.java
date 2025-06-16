@@ -15,19 +15,19 @@ public class RepositoryData {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long refID;
 
-    @Column(length = 30, nullable = false)
+    @Column(length = 150, nullable = false)
     private String keyValue;
 
-    @Column(length = 30, nullable = false)
+    @Column(length = 300, nullable = false)
     private String value1;
 
-    @Column(length = 30)
+    @Column(length = 300)
     private String value2;
 
-    @Column(length = 30)
+    @Column(length = 300)
     private String value3;
 
-    @Column(length = 30)
+    @Column(length = 300)
     private String value4;
 
     @Column(length = 3, nullable = false)
