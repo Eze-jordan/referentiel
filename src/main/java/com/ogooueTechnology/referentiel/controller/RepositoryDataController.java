@@ -14,57 +14,63 @@ import java.util.List;
 @Tag(name = "Référentiel", description = "API pour gérer les entrées du référentiel")
 public class RepositoryDataController {
 
-    private final RepositoryDataService repositoryService;
+    private final RepositoryDataService repositoryDataService;
 
-    public RepositoryDataController(RepositoryDataService repositoryService) {
-        this.repositoryService = repositoryService;
+    public RepositoryDataController(RepositoryDataService repositoryDataService) {
+        this.repositoryDataService = repositoryDataService;
     }
 
     @Operation(summary = "Récupérer toutes les données du référentiel")
     @GetMapping
     public ResponseEntity<List<RepositoryData>> getAll() {
-        return repositoryService.getAll();
+        return repositoryDataService.getAll();
     }
 
     @Operation(summary = "Récupérer les données par catégorie")
     @GetMapping("/categorie/{refCategory}")
     public ResponseEntity<List<RepositoryData>> getByCategory(@PathVariable String refCategory) {
-        return repositoryService.getAllByCategory(refCategory);
+        return repositoryDataService.getAllByCategory(refCategory);
     }
 
     @Operation(summary = "Récupérer une donnée par son ID")
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id) {
-        return repositoryService.getById(id);
+        return repositoryDataService.getById(id);
     }
 
     @Operation(summary = "Rechercher une donnée par mot-clé")
     @GetMapping("/search")
     public ResponseEntity<List<RepositoryData>> search(@RequestParam("q") String keyword) {
-        return repositoryService.search(keyword);
+        return repositoryDataService.search(keyword);
     }
 
     @Operation(summary = "Créer une nouvelle entrée dans le référentiel")
     @PostMapping
     public ResponseEntity<?> create(@RequestBody RepositoryData data) {
-        return repositoryService.create(data);
+        return repositoryDataService.create(data);
     }
 
     @Operation(summary = "Créer plusieurs entrées dans le référentiel")
     @PostMapping("/batch")
     public ResponseEntity<?> createBatch(@RequestBody List<RepositoryData> dataList) {
-        return repositoryService.createBatch(dataList);
+        return repositoryDataService.createBatch(dataList);
     }
 
     @Operation(summary = "Modifier une entrée existante")
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody RepositoryData updated) {
-        return repositoryService.update(id, updated);
+        return repositoryDataService.update(id, updated);
     }
 
     @Operation(summary = "Supprimer une entrée du référentiel")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
-        return repositoryService.delete(id);
+        return repositoryDataService.delete(id);
+    }
+
+    @GetMapping("/categories")
+    public ResponseEntity<List<String>> getAllRefCategories() {
+        // ✅ appel via l'instance injectée
+        return repositoryDataService.getAllDistinctRefCategories();
     }
 }

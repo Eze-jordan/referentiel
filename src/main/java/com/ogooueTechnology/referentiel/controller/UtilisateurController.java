@@ -3,8 +3,11 @@ package com.ogooueTechnology.referentiel.controller;
 import com.ogooueTechnology.referentiel.dto.AuthentificationDTO;
 import com.ogooueTechnology.referentiel.dto.UtilisateurRequestDTO;
 import com.ogooueTechnology.referentiel.dto.UtilisateurResponseDTO;
+import com.ogooueTechnology.referentiel.model.Utilisateur;
+import com.ogooueTechnology.referentiel.repository.UtilisateurRepository;
 import com.ogooueTechnology.referentiel.securite.JwtService;
 import com.ogooueTechnology.referentiel.service.UtilisateurService;
+import com.ogooueTechnology.referentiel.service.ValidationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -29,9 +32,13 @@ public class UtilisateurController {
     private AuthenticationManager authenticationManager;
     @Autowired
     private JwtService jwtService;
+    private  final UtilisateurRepository utilisateurRepository;
+    private  final ValidationService validationService;
 
-    public UtilisateurController(UtilisateurService utilisateurService) {
+    public UtilisateurController(UtilisateurService utilisateurService, UtilisateurRepository utilisateurRepository, ValidationService validationService) {
         this.utilisateurService = utilisateurService;
+        this.utilisateurRepository = utilisateurRepository;
+        this.validationService = validationService;
     }
 
     // 🔹 Créer un utilisateur
@@ -40,6 +47,18 @@ public class UtilisateurController {
     public ResponseEntity<UtilisateurResponseDTO> create(@RequestBody UtilisateurRequestDTO dto) {
         return ResponseEntity.ok(utilisateurService.createUtilisateur(dto));
     }
+
+    @PostMapping("/resend-otp")
+    public ResponseEntity<?> resendOtp(@RequestBody UtilisateurRequestDTO dto) {
+        Utilisateur utilisateur = utilisateurRepository.findByEmail(dto.getEmail())
+                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+
+        validationService.renvoyerCode(utilisateur); // ou renvoyerNouveauCode()
+
+        return ResponseEntity.ok("Nouveau code envoyé");
+    }
+
+
     @PostMapping("/activation")
     @Operation(summary = "Activer un compte utilisateur", description = "Active un utilisateur via un token ou un code d’activation")
     public ResponseEntity<String> activation(@RequestBody Map<String, String> activation) {

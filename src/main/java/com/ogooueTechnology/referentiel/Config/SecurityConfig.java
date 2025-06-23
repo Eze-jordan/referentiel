@@ -42,7 +42,8 @@ public class SecurityConfig {
                                 "/api/v1/utilisateurs/activation",
                                 "/api/v1/utilisateurs/connexion",
                                 "/swagger-ui/**",
-                                "/v3/api-docs/**"
+                                "/v3/api-docs/**",
+                                "api/v1/utilisateurs/resend-otp"
                                 ).permitAll()
                         .anyRequest().authenticated()
                 )

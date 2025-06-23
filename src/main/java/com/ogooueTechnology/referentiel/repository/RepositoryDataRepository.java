@@ -2,6 +2,8 @@ package com.ogooueTechnology.referentiel.repository;
 
 import com.ogooueTechnology.referentiel.model.RepositoryData;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
 import java.util.List;
 
 public interface RepositoryDataRepository extends JpaRepository<RepositoryData, Long> {
@@ -13,4 +15,6 @@ public interface RepositoryDataRepository extends JpaRepository<RepositoryData, 
     List<RepositoryData> findByKeyValueContainingIgnoreCaseOrValue1ContainingIgnoreCaseOrValue2ContainingIgnoreCaseOrValue3ContainingIgnoreCaseOrValue4ContainingIgnoreCase(
             String k1, String v1, String v2, String v3, String v4
     );
+    @Query("SELECT DISTINCT r.refCategory FROM RepositoryData r")
+    List<String> findDistinctRefCategory();
 }

@@ -91,5 +91,10 @@ public class RepositoryDataService {
         List<RepositoryData> list = repository.findAll();
         return ResponseEntity.ok(list);
     }
+    public ResponseEntity<List<String>> getAllDistinctRefCategories() {
+        List<String> categories = repository.findDistinctRefCategory();
+        return ResponseEntity.ok(categories);
+    }
+
 
 }
