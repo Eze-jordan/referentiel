@@ -69,6 +69,7 @@ public class RepositoryDataController {
     }
 
     @GetMapping("/categories")
+    @Operation(summary = "récupère toutes les valeurs distinctes de refCategory")
     public ResponseEntity<List<String>> getAllRefCategories() {
         // ✅ appel via l'instance injectée
         return repositoryDataService.getAllDistinctRefCategories();

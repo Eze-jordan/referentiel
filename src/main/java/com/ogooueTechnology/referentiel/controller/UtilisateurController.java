@@ -49,6 +49,7 @@ public class UtilisateurController {
     }
 
     @PostMapping("/resend-otp")
+    @Operation(summary = "Renvoie uniquement si le code est expiré", description = "Permet de renvoyer un nouveau code à l'utilisateur uniquement si l'ancien a expiré")
     public ResponseEntity<?> resendOtp(@RequestBody UtilisateurRequestDTO dto) {
         Utilisateur utilisateur = utilisateurRepository.findByEmail(dto.getEmail())
                 .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
