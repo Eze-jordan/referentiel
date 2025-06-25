@@ -50,7 +50,7 @@ public class ValidationService {
 
             validation.setCode(newCode);
             validation.setCreation(now);
-            validation.setExpiration(now.plus(10, MINUTES));
+            validation.setExpiration(now.plus(60, MINUTES));
 
             validationRipository.save(validation);
             notificationService.envoyer(validation);
