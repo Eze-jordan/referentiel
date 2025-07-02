@@ -1,4 +1,4 @@
-FROM eclipse-temurin:17-jdk-jammy as builder
+FROM eclipse-temurin:17-jdk-alpine as builder
 
 WORKDIR application
 
@@ -11,8 +11,7 @@ RUN chmod +x mvnw
 RUN ./mvnw clean package -DskipTests
 RUN java -Djarmode=layertools -jar target/*.jar extract
 
-
-FROM eclipse-temurin:21-jre-jammy
+FROM eclipse-temurin:21-jre
 WORKDIR application
 
 RUN apt-get update && \
