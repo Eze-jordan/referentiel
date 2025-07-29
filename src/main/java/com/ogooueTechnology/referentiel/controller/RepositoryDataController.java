@@ -21,7 +21,7 @@ public class RepositoryDataController {
     }
 
     @Operation(summary = "Récupérer toutes les données du référentiel")
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<RepositoryData>> getAll() {
         return repositoryDataService.getAll();
     }

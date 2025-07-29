@@ -47,7 +47,12 @@ public class SecurityConfig {
                                 "/api/v1/utilisateurs/connexion",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
-                                "/api/v1/utilisateurs/resend-otp"
+                                "/api/v1/utilisateurs/resend-otp",
+                                "/api/v1/referentiel/{id}",
+                                "/api/v1/referentiel/search",
+                                "/api/v1/referentiel/categorie/{refCategory}",
+                                "/api/v1/referentiel/all",
+                                "/api/v1/referentiel/categories"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
