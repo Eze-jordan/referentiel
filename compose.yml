@@ -21,7 +21,7 @@ services:
     depends_on:
       - db
     ports:
-      - "9088:8080"
+      - "9085:8080"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/repository_db
     networks:
