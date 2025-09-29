@@ -5,7 +5,6 @@ import com.ogooueTechnology.referentiel.dto.UtilisateurResponseDTO;
 import com.ogooueTechnology.referentiel.mapper.UtilisateurMapper;
 import com.ogooueTechnology.referentiel.model.Role;
 import com.ogooueTechnology.referentiel.model.Utilisateur;
-import com.ogooueTechnology.referentiel.model.Validation;
 import com.ogooueTechnology.referentiel.repository.UtilisateurRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,23 +23,44 @@ public class UtilisateurService implements UserDetailsService {
 
     private final UtilisateurRepository utilisateurRepository;
     private final PasswordEncoder passwordEncoder;
-    private  final ValidationService validationService;
+    private final NotificationService notificationService;
 
-    public UtilisateurService(UtilisateurRepository utilisateurRepository, PasswordEncoder passwordEncoder, ValidationService validationService) {
+    public UtilisateurService(UtilisateurRepository utilisateurRepository, PasswordEncoder passwordEncoder, NotificationService notificationService) {
         this.utilisateurRepository = utilisateurRepository;
         this.passwordEncoder = passwordEncoder;
-        this.validationService = validationService;
+        this.notificationService = notificationService;
     }
-    //Créer un nouvel utilisateur
-    public UtilisateurResponseDTO createUtilisateur(UtilisateurRequestDTO dto) {
-        // Rôle par défaut
+    private String generateRandomPassword(int length) {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*!";
+        StringBuilder sb = new StringBuilder();
+        java.util.Random random = new java.util.Random();
+        for (int i = 0; i < length; i++) {
+            sb.append(chars.charAt(random.nextInt(chars.length())));
+        }
+        return sb.toString();
+    }
+
+    public UtilisateurResponseDTO createUtilisateurSansOtp(UtilisateurRequestDTO dto) {
         if (dto.getRole() == null) {
             dto.setRole(Role.USER);
         }
+
+        // Générer un mot de passe aléatoire
+        String generatedPassword = generateRandomPassword(10);
+
         Utilisateur utilisateur = UtilisateurMapper.toEntity(dto);
-        utilisateur.setMotDePasse(passwordEncoder.encode(dto.getPassword())); // encodage du mot de passe
+        utilisateur.setMotDePasse(passwordEncoder.encode(generatedPassword));
+        utilisateur.setActif(true); // pas d’OTP → on active direct
+
         Utilisateur saved = utilisateurRepository.save(utilisateur);
-        this.validationService.enregister(utilisateur);
+
+        // Envoi des identifiants par email
+        notificationService.envoyerIdentifiants(
+                saved.getEmail(),
+                saved.getNom(),
+                saved.getPrenom(),
+                generatedPassword
+        );
 
         return UtilisateurMapper.toDto(saved);
     }
@@ -64,18 +84,7 @@ public class UtilisateurService implements UserDetailsService {
         }
         utilisateurRepository.deleteById(id);
     }
-    public void activation(Map<String, String> activation) {
-        Validation validation = validationService.lireEnFonctionDuCode(activation.get("code"));
-        if (Instant.now().isAfter(validation.getExpiration())) {
-            throw new RuntimeException("Votre code a expiré");
-        }
 
-        Utilisateur utilisateurActiver = utilisateurRepository.findById(validation.getUtilisateur().getId())
-                .orElseThrow(() -> new RuntimeException("Utilisateur inconnu"));
-
-        utilisateurActiver.setActif(true);
-        utilisateurRepository.save(utilisateurActiver);
-    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -103,6 +112,41 @@ public class UtilisateurService implements UserDetailsService {
         Utilisateur updated = utilisateurRepository.save(existing);
         return UtilisateurMapper.toDto(updated);
     }
+
+    // Met à jour uniquement les informations de l'utilisateur (sans le mot de passe)
+    public UtilisateurResponseDTO updateInfos(Long id, UtilisateurRequestDTO dto) {
+        Utilisateur existing = utilisateurRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable avec l'id " + id));
+
+        existing.setNom(dto.getNom());
+        existing.setPrenom(dto.getPrenom());
+        existing.setEmail(dto.getEmail());
+        existing.setRole(dto.getRole());
+
+        Utilisateur updated = utilisateurRepository.save(existing);
+        return UtilisateurMapper.toDto(updated);
+    }
+
+    // Met à jour uniquement le mot de passe
+    public void updatePassword(Long id, String oldPassword, String newPassword) {
+        Utilisateur utilisateur = utilisateurRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable avec l'id " + id));
+
+        // Vérifie l'ancien mot de passe
+        if (!passwordEncoder.matches(oldPassword, utilisateur.getMotDePasse())) {
+            throw new RuntimeException("Ancien mot de passe incorrect");
+        }
+
+        // Vérifie que le nouveau mot de passe n’est pas vide
+        if (newPassword == null || newPassword.isEmpty()) {
+            throw new RuntimeException("Le nouveau mot de passe ne peut pas être vide");
+        }
+
+        utilisateur.setMotDePasse(passwordEncoder.encode(newPassword));
+        utilisateurRepository.save(utilisateur);
+    }
+
+
     //Activer un compte utilisateur
     public UtilisateurResponseDTO activerUtilisateur(Long id) {
         Utilisateur utilisateur = utilisateurRepository.findById(id)

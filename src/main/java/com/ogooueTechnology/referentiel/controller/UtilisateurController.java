@@ -7,7 +7,6 @@ import com.ogooueTechnology.referentiel.model.Utilisateur;
 import com.ogooueTechnology.referentiel.repository.UtilisateurRepository;
 import com.ogooueTechnology.referentiel.securite.JwtService;
 import com.ogooueTechnology.referentiel.service.UtilisateurService;
-import com.ogooueTechnology.referentiel.service.ValidationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -33,42 +32,17 @@ public class UtilisateurController {
     @Autowired
     private JwtService jwtService;
     private  final UtilisateurRepository utilisateurRepository;
-    private  final ValidationService validationService;
 
-    public UtilisateurController(UtilisateurService utilisateurService, UtilisateurRepository utilisateurRepository, ValidationService validationService) {
+    public UtilisateurController(UtilisateurService utilisateurService, UtilisateurRepository utilisateurRepository) {
         this.utilisateurService = utilisateurService;
         this.utilisateurRepository = utilisateurRepository;
-        this.validationService = validationService;
     }
 
-    // 🔹 Créer un utilisateur
-    @PostMapping("/create")
-    @Operation(summary = "Créer un utilisateur", description = "Permet de créer un nouvel utilisateur")
-    public ResponseEntity<UtilisateurResponseDTO> create(@RequestBody UtilisateurRequestDTO dto) {
-        return ResponseEntity.ok(utilisateurService.createUtilisateur(dto));
-    }
-
-    @PostMapping("/resend-otp")
-    @Operation(summary = "Renvoie uniquement si le code est expiré", description = "Permet de renvoyer un nouveau code à l'utilisateur uniquement si l'ancien a expiré")
-    public ResponseEntity<?> resendOtp(@RequestBody UtilisateurRequestDTO dto) {
-        Utilisateur utilisateur = utilisateurRepository.findByEmail(dto.getEmail())
-                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
-
-        validationService.renvoyerCode(utilisateur); // ou renvoyerNouveauCode()
-
-        return ResponseEntity.ok("Nouveau code envoyé");
-    }
-
-
-    @PostMapping("/activation")
-    @Operation(summary = "Activer un compte utilisateur", description = "Active un utilisateur via un token ou un code d’activation")
-    public ResponseEntity<String> activation(@RequestBody Map<String, String> activation) {
-        try {
-            this.utilisateurService.activation(activation);
-            return ResponseEntity.ok("Compte activé avec succès.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+    // 🔹 Créer un utilisateur sans OTP (mot de passe généré et envoyé par mail)
+    @PostMapping("/create-auto")
+    @Operation(summary = "Créer un utilisateur sans OTP", description = "Crée un utilisateur actif avec un mot de passe généré automatiquement. Les identifiants sont envoyés par mail.")
+    public ResponseEntity<UtilisateurResponseDTO> createAuto(@RequestBody UtilisateurRequestDTO dto) {
+        return ResponseEntity.ok(utilisateurService.createUtilisateurSansOtp(dto));
     }
 
     @PostMapping("/connexion")
@@ -107,6 +81,17 @@ public class UtilisateurController {
     public ResponseEntity<UtilisateurResponseDTO> update(@PathVariable Long id, @RequestBody UtilisateurRequestDTO dto) {
         return ResponseEntity.ok(utilisateurService.updateUtilisateur(id, dto));
     }
+
+    @PutMapping("/{id}/password")
+    public ResponseEntity<String> updatePassword(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> body) {
+        String oldPassword = body.get("oldPassword");
+        String newPassword = body.get("newPassword");
+        utilisateurService.updatePassword(id, oldPassword, newPassword);
+        return ResponseEntity.ok("Mot de passe mis à jour avec succès");
+    }
+
 
     // 🔹 Supprimer un utilisateur
     @DeleteMapping("/{id}")

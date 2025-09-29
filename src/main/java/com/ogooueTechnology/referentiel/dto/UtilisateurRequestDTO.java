@@ -1,5 +1,6 @@
 package com.ogooueTechnology.referentiel.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ogooueTechnology.referentiel.model.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -12,12 +13,7 @@ public class UtilisateurRequestDTO{
     @NotBlank(message = "L'email est obligatoire")
     @Email(message = "Email invalide")
     private String email;
-    @NotBlank(message = "Le mot de passe est obligatoire")
-    @Size(min = 12, message = "Le mot de passe doit contenir au moins 8 caractères")
-    @Pattern(
-            regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&]).{8,}$",
-            message = "Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial"
-    )
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     private Role role;
 
