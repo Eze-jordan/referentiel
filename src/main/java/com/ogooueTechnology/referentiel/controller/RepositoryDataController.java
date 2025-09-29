@@ -4,6 +4,7 @@ import com.ogooueTechnology.referentiel.model.RepositoryData;
 import com.ogooueTechnology.referentiel.service.RepositoryDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -46,12 +47,14 @@ public class RepositoryDataController {
 
     @Operation(summary = "Créer une nouvelle entrée dans le référentiel")
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> create(@RequestBody RepositoryData data) {
         return repositoryDataService.create(data);
     }
 
     @Operation(summary = "Créer plusieurs entrées dans le référentiel")
     @PostMapping("/batch")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createBatch(@RequestBody List<RepositoryData> dataList) {
         return repositoryDataService.createBatch(dataList);
     }

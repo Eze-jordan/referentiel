@@ -1,4 +1,5 @@
 package com.ogooueTechnology.referentiel.model;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,7 +23,7 @@ public class Utilisateur implements UserDetails {
     private String prenom;
     @Column(unique = true, nullable = false)
     private String email;
-    @Column(nullable = false)
+    @JsonIgnore
     private String motDePasse;
     private Role role;
     @Column(nullable = false)

@@ -38,16 +38,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .cors(Customizer.withDefaults()) // ✅ active le support CORS ici
+                .cors(Customizer.withDefaults()) //
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
-                                "/api/v1/utilisateurs/create",
-                                "/api/v1/utilisateurs/activation",
+                                "/api/v1/utilisateurs/create-auto",
                                 "/api/v1/utilisateurs/connexion",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
-                                "/api/v1/utilisateurs/resend-otp",
                                 "/api/v1/referentiel/{id}",
                                 "/api/v1/referentiel/search",
                                 "/api/v1/referentiel/categorie/{refCategory}",
