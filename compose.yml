@@ -23,7 +23,7 @@ services:
       - "9085:8080"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://86.105.252.192:5432/repositorydb
-      SPRING_DATASOURCE_USERNAME: mon_user
+      SPRING_DATASOURCE_USERNAME: springuser
       SPRING_DATASOURCE_PASSWORD: 9bc62539da2fd028d4f558651ff2fa274b9605ba7faf8511c092bd78273970cd
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_JPA_SHOW_SQL: "true"
