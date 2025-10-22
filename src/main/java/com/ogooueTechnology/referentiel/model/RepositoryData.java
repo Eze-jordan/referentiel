@@ -33,6 +33,9 @@ public class RepositoryData {
     @Column(length = 3, nullable = false)
     private String refCategory;
 
+    @Column(length = 15, nullable = false)
+    private String refDescription;
+
     public Long getRefID() {
         return refID;
     }
@@ -67,6 +70,14 @@ public class RepositoryData {
 
     public String getValue3() {
         return value3;
+    }
+
+    public String getRefDescription() {
+        return refDescription;
+    }
+
+    public void setRefDescription(String refDescription) {
+        this.refDescription = refDescription;
     }
 
     public void setValue3(String value3) {
