@@ -70,6 +70,7 @@ public class RepositoryDataService {
             data.setValue3(updatedData.getValue3());
             data.setValue4(updatedData.getValue4());
             data.setRefCategory(updatedData.getRefCategory());
+            data.setRefDescription(updatedData.getRefDescription());
             return ResponseEntity.ok(repository.save(data));
         } else {
             return ResponseEntity.status(404).body("Aucune donnée trouvée avec l'ID : " + refID);
