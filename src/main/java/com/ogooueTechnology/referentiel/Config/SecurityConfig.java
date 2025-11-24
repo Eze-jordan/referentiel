@@ -20,6 +20,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -62,13 +63,37 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:4200")); // ← frontend autorisé
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("*"));
+
+        // 🔥 Autoriser certaines origines spécifiques
+        configuration.addAllowedOriginPattern("http://localhost:3000");
+        configuration.addAllowedOriginPattern("http://localhost:3001");
+        configuration.addAllowedOriginPattern("http://localhost:4200");
+
+        // 🔥 Autoriser tous les domaines (si nécessaire)
+        configuration.addAllowedOriginPattern("*");
+
+        // ✅ Autoriser toutes les méthodes HTTP
+        configuration.setAllowedMethods(Arrays.asList("*"));
+
+        // ✅ Autoriser tous les headers
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+
+        // ✅ Exposer certains headers dans la réponse (visibles côté client)
+        configuration.setExposedHeaders(Arrays.asList(
+                "Authorization",
+                "Content-Disposition"
+        ));
+
+        // ✅ Autoriser les cookies / tokens JWT
         configuration.setAllowCredentials(true);
 
+        // ✅ Mise en cache de la politique CORS (1h)
+        configuration.setMaxAge(3600L);
+
+        // ✅ Appliquer la config à toutes les routes
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
+
         return source;
     }
 
