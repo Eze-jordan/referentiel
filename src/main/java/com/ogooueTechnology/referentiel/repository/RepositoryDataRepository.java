@@ -1,6 +1,7 @@
 package com.ogooueTechnology.referentiel.repository;
 
 import com.ogooueTechnology.referentiel.model.RepositoryData;
+import com.ogooueTechnology.referentiel.projection.RefCategoryDescriptionProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -17,4 +18,8 @@ public interface RepositoryDataRepository extends JpaRepository<RepositoryData, 
     );
     @Query("SELECT DISTINCT r.refCategory FROM RepositoryData r")
     List<String> findDistinctRefCategory();
+
+    @Query("SELECT DISTINCT r.refCategory AS refCategory, r.refDescription AS refDescription FROM RepositoryData r")
+    List<RefCategoryDescriptionProjection> findAllCategoryAndDescription();
 }
+

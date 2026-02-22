@@ -1,6 +1,7 @@
 package com.ogooueTechnology.referentiel.service;
 
 import com.ogooueTechnology.referentiel.model.RepositoryData;
+import com.ogooueTechnology.referentiel.projection.RefCategoryDescriptionProjection;
 import com.ogooueTechnology.referentiel.repository.RepositoryDataRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -97,5 +98,7 @@ public class RepositoryDataService {
         return ResponseEntity.ok(categories);
     }
 
-
+    public ResponseEntity<List<RefCategoryDescriptionProjection>> getAllCategoryAndDescription() {
+        return ResponseEntity.ok(repository.findAllCategoryAndDescription());
+    }
 }

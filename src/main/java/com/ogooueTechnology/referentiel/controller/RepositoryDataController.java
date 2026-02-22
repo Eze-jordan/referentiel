@@ -1,6 +1,7 @@
 package com.ogooueTechnology.referentiel.controller;
 
 import com.ogooueTechnology.referentiel.model.RepositoryData;
+import com.ogooueTechnology.referentiel.projection.RefCategoryDescriptionProjection;
 import com.ogooueTechnology.referentiel.service.RepositoryDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
@@ -76,5 +77,10 @@ public class RepositoryDataController {
     public ResponseEntity<List<String>> getAllRefCategories() {
         // ✅ appel via l'instance injectée
         return repositoryDataService.getAllDistinctRefCategories();
+    }
+
+    @GetMapping("/categoriesDescription")
+    public ResponseEntity<List<RefCategoryDescriptionProjection>> getAllCategoriesAndDescription() {
+        return repositoryDataService.getAllCategoryAndDescription();
     }
 }
