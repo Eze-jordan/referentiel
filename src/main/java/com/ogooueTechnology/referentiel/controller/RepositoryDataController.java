@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -82,5 +83,9 @@ public class RepositoryDataController {
     @GetMapping("/categoriesDescription")
     public ResponseEntity<List<RefCategoryDescriptionProjection>> getAllCategoriesAndDescription() {
         return repositoryDataService.getAllCategoryAndDescription();
+    }
+    @PostMapping("/upload")
+    public ResponseEntity<?> upload(@RequestParam("file") MultipartFile file) {
+        return repositoryDataService.uploadFile(file);
     }
 }
