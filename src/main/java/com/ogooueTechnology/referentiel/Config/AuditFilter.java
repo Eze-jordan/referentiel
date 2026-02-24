@@ -35,7 +35,11 @@ public class AuditFilter extends OncePerRequestFilter {
                 && !"anonymousUser".equals(auth.getPrincipal())) {
 
             String email = auth.getName();
-            String role = auth.getAuthorities().toString();
+            String role = auth.getAuthorities()
+                    .stream()
+                    .map(grantedAuthority -> grantedAuthority.getAuthority())
+                    .reduce((r1, r2) -> r1 + "," + r2)
+                    .orElse("NO_ROLE");
 
             auditLogService.logAction(
                     request.getMethod() + " " + request.getRequestURI(),
