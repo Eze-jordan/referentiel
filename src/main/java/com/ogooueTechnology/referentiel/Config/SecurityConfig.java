@@ -51,7 +51,8 @@ public class SecurityConfig {
                                 "/api/v1/referentiel/search",
                                 "/api/v1/referentiel/categorie/{refCategory}",
                                 "/api/v1/referentiel/all",
-                                "/api/v1/referentiel/categories"
+                                "/api/v1/referentiel/categories",
+                                "/api/v1/referentiel/categoriesDescription"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
